@@ -1,15 +1,39 @@
 //grab spotify keys
 require("dotenv").config();
 
-import { spotify } from "keys.js";
+//process.env.<the name of element> 
+console.log(process.env.SPOTIFY_ID)
 
-var spotify = new Spotify(keys.spotify);
+// import {spotify} from "./keys.js";
+
+//one way to import an object from another file
+var secretKeys = require("./keys.js");
+// console.log(spotify.id);
+
+var Spotify = require('node-spotify-api');
+ 
+var spotify = new Spotify({
+  id: secretKeys.spotify.id,
+  secret: secretKeys.spotify.secret
+});
+ 
+spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
+ 
+console.log(data); 
+});
 
 //moment.js for date format from spotify moment("12-25-1995", "MM-DD-YYYY");
-var moment = require('moment');
-moment().format();
+// var moment = require('moment');
+// moment().format();
 
-//4 commands
+//require request-not sure how to use with ombd. We used axios in class
+
+
+
+//4 commands- use Switch Case
 //concert-this <artists name> using bands in town api
     //"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
         //returns
