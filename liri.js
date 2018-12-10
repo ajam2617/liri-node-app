@@ -4,13 +4,16 @@ require("dotenv").config();
 //process.env.<the name of element> 
 console.log(process.env.SPOTIFY_ID)
 
+//import code not working. Commented it out
 // import {spotify} from "./keys.js";
 
 //one way to import an object from another file
 var secretKeys = require("./keys.js");
+
 // console.log(spotify.id);
 
 var Spotify = require('node-spotify-api');
+//did npm install node-spotify-api but don't understand the response
  
 var spotify = new Spotify({
   id: secretKeys.spotify.id,
