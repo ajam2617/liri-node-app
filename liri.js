@@ -5,6 +5,7 @@ require("dotenv").config();
 var moment = require('moment');
 var request = require("request");
 var inquirer = require("inquirer");
+var axios = require("axios");
 
 //import code not working. Commented it out
 // import {spotify} from "./keys.js";
@@ -31,6 +32,7 @@ var spotify = new Spotify({
 
 
 //4 commands- use Switch Case
+//my promise before the switch case is stopping the app. The functions run correct separately, but I can't seem to line them up. 
 inquirer.prompt([
     {
         type: "rawlist",
@@ -47,9 +49,9 @@ inquirer.prompt([
             searchSpotify();
             break;
 
-        // case "movie-this":
-        //     runMovie();
-        //     break;
+        case "movie-this":
+            runMovie();
+            break;
 
         // case "do-what-it-says":
         //     doWhat();
@@ -70,8 +72,8 @@ function runConcert() {
             name: "artist",
             message: "Type in a band or artist"
         }
-    ]).then(function(userChoice){
-        var band = (userChoice.artist);
+    ]).then(function(userInput){
+        var band = (userInput.artist);
         var queryUrl = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp"
         request(queryUrl, function(err, response, body){
             if (err) {
@@ -82,6 +84,8 @@ function runConcert() {
                     console.log("THE BAND IS IN TOWN!")
                     console.log("Venue name: " + event[i].venue.name);
                     console.log("Venue location: " + event[i].venue.city + event[i].venue.region);
+
+                    //have not tested if this works. My app stopped working after first question prompt
                     var date = event[i].datetime;
                     var day = moment(date).format("MM-DD-YYYY")
                     console.log(day);
@@ -92,6 +96,14 @@ function runConcert() {
 }
 
 //spotify-this-song "<song name here>" using node-spotify-api. Using prompt to get user input, and switch function
+// searchSpotify();
+
+    //returns
+    //Artist(s)
+    //Song Name
+    //preview link of the song
+    //album the song is from
+    //if no song provided, default "The Sign" Ace of Base
 function searchSpotify() {
     inquirer.prompt([
         {
@@ -115,14 +127,7 @@ function searchSpotify() {
     });
 
 }
-// searchSpotify();
 
-    //returns
-    //Artist(s)
-    //Song Name
-    //preview link of the song
-    //album the song is from
-    //if no song provided, default "The Sign" Ace of Base
 
 //movie-this "<movie name here" using in class "trilogy" api Key
     //var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
@@ -136,6 +141,29 @@ function searchSpotify() {
         //Plot of the movie.
         //Actors in the movie.
         //if no movie, default Mr Nobody
+   function runMovie () {
+       inquirer.prompt([
+           {
+               type: "input",
+               name: "movie",
+               message:"Type in a movie"
+           }
+       ]).then(function (userInput) {
+           var movie= (userInput.movie); 
+           var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+            for (var j=2; j <movie.length; j++) {
+                if (j>2 && i<movie.length) {
+                    movie = movie + "+" + movie[i];
+                }
+                else {
+                    movie+=movie[i];
+                }
+            }
+            axios.get(queryUrl).then (function(response){
+                console.log(response.data)
+            })
+       }
+   }     
 
 //do-what-it-says using fs node package
         //take text inside random.txt=="I want it that Way"
