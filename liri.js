@@ -22,16 +22,7 @@ var spotify = new Spotify({
     secret: secretKeys.spotify.secret
 });
 
-//lines 24-33 were to test my spotify api call. 
-// spotify.search({ type: 'track', query: song }, function(err, data) {
-//   if (err) {
-//     return console.log('Error occurred: ' + err);
-//   }
-
-// console.log(data.tracks.items); 
-// });
-
-//moment.js for date format from spotify moment("12-25-1995", "MM-DD-YYYY");
+//moment.js for date format from bands in town moment("12-25-1995", "MM-DD-YYYY");
 // var moment = require('moment');
 // moment().format();
 
@@ -40,12 +31,65 @@ var spotify = new Spotify({
 
 
 //4 commands- use Switch Case
+inquirer.prompt([
+    {
+        type: "rawlist",
+        name: "start",
+        choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says"]
+    }
+]).then(function (UserChoice) {
+    switch (UserChoice) {
+        case "concert-this":
+            runConcert();
+            break;
+
+        case "spotify-this-song":
+            searchSpotify();
+            break;
+
+        // case "movie-this":
+        //     runMovie();
+        //     break;
+
+        // case "do-what-it-says":
+        //     doWhat();
+        //     break;
+    }
+})
+
 //concert-this <artists name> using bands in town api
 //"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
 //returns
 //name of venue
 //venue location
 //date of event using moment MM/DD/YYY
+function runConcert() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "artist",
+            message: "Type in a band or artist"
+        }
+    ]).then(function(userChoice){
+        var band = (userChoice.artist);
+        var queryUrl = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp"
+        request(queryUrl, function(err, response, body){
+            if (err) {
+                return console.log(err);
+            } else {
+                var event = JSON.parse(body);
+                for (var i = 0; i < event.length; i++) {
+                    console.log("THE BAND IS IN TOWN!")
+                    console.log("Venue name: " + event[i].venue.name);
+                    console.log("Venue location: " + event[i].venue.city + event[i].venue.region);
+                    var date = event[i].datetime;
+                    var day = moment(date).format("MM-DD-YYYY")
+                    console.log(day);
+                }
+            }
+        })
+    })
+}
 
 //spotify-this-song "<song name here>" using node-spotify-api. Using prompt to get user input, and switch function
 function searchSpotify() {
@@ -66,12 +110,12 @@ function searchSpotify() {
                 console.log("Preview: " + data.tracks.items[0].album.href);
                 console.log("Song: " + userInput.song);
             }
-        
-          });
+
+        });
     });
 
 }
-searchSpotify();
+// searchSpotify();
 
     //returns
     //Artist(s)
