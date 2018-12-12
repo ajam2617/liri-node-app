@@ -6,33 +6,17 @@ var moment = require('moment');
 var request = require("request");
 var inquirer = require("inquirer");
 var axios = require("axios");
-
-//import code not working. Commented it out
-// import {spotify} from "./keys.js";
-
-//one way to import an object from another file
 var secretKeys = require("./keys.js");
-
-// console.log(spotify.id);
-
 var Spotify = require('node-spotify-api');
-//did npm install node-spotify-api but don't understand the response
 
 var spotify = new Spotify({
     id: secretKeys.spotify.id,
     secret: secretKeys.spotify.secret
 });
 
-//moment.js for date format from bands in town moment("12-25-1995", "MM-DD-YYYY");
-// var moment = require('moment');
-// moment().format();
-
-//require request-not sure how to use with ombd. We used axios in class
-
-
-
 //4 commands- use Switch Case
-//my promise before the switch case is stopping the app. The functions run correct separately, but I can't seem to line them up. 
+//I'm going to try to make the choices a function and then separate the switch method into another function to see if that will allow my app to work as intended 
+
 inquirer.prompt([
     {
         type: "rawlist",
