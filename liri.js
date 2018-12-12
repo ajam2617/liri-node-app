@@ -167,10 +167,3 @@ function runMovie(movie) {
         
 //do-what-it-says using fs node package
         //take text inside random.txt=="I want it that Way"
-
-
-
-
-
-//movie-this
-//do-what-it-says
