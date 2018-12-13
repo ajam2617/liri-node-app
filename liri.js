@@ -7,6 +7,7 @@ var request = require("request");
 var inquirer = require("inquirer");
 var secretKeys = require("./keys.js");
 var Spotify = require('node-spotify-api');
+var fs = require('fs');
 
 var spotify = new Spotify({
     id: secretKeys.spotify.id,
@@ -44,7 +45,7 @@ function liriBot() {
         {
             type: "rawlist",
             name: "start",
-            choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says"]
+            choices: ["concert-this", "spotify-this-song", "movie-this"]
         },
         {
             type: "input",
@@ -62,21 +63,22 @@ liriBot();
 function liriSwitch(choice, title) {
     switch (choice) {
         case "concert-this":
-            runConcert();
+            runConcert(title);
             break;
         case "spotify-this-song":
-            searchSpotify();
+            searchSpotify(title);
             break;
 
         case "movie-this":
-            runMovie();
+            runMovie(title);
             break;
+        // case "do-what-it-says":
+        //      doWhat();
+        //      break;
     }
 }
 
-//case "do-what-it-says":
-//     doWhat();
-//     break;
+
 
 
 //concert-this <artists name> using bands in town api
@@ -92,10 +94,11 @@ function runConcert(band) {
             return console.log(err);
         } else {
             var event = JSON.parse(body);
-            for (var i = 0; i < event.length; i++) {
+            console.table(event)
+            for (var i = 0; i < 10; i++) {
                 console.log("THE BAND IS IN TOWN!")
                 console.log("Venue name: " + event[i].venue.name);
-                console.log("Venue location: " + event[i].venue.city + ", " + event[i].venue.region);
+                console.log("Venue location: " + event[i].venue.city);
 
                 //have not tested if this works. My app stopped working after first question prompt
                 var date = event[i].datetime;
@@ -146,24 +149,38 @@ function searchSpotify(song) {
 //if no movie, default Mr Nobody
 function runMovie(movie) {
     var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
-
-    request(queryUrl, function(err, response, body) {
+    
+    request(queryUrl, function (err, response, body) {
         var data = JSON.parse(body);
 
-        if(data.length === 0) {
+        if (data.length === 0) {
             console.log("Sorry, never heard of it. You should watch Mr. Nobody.")
         } else {
-            console.log("Title: " + data.Title);
+            console.log("Title: " + data.Title); 
             console.log("Released: " + data.Year);
             console.log("IMDb rating: " + data.imdbRating);
-            console.log("Rotten Tomatoes Rating: " + data.Ratings[1].Value);
-            console.log("Country: " + data.Country);
-            console.log("Language: " + data.language);
-            console.log("Plot: " + data.Plot);
+            console.log("Rotten Tomatoes Rating: " + JSON.stringify(data.Ratings[1].Value)); 
+            console.log("Country: " + data.Country); 
+            console.log("Language: " + data.Language); 
+            console.log("Plot: " + data.Plot); 
             console.log("Actors: " + data.Actors);
         }
     })
 };
-        
+
 //do-what-it-says using fs node package
-        //take text inside random.txt=="I want it that Way"
+//take text inside random.txt=="I want it that Way" and run spotify-api
+
+// function doWhat(movie) {
+//     fs.appendFile("log.txt", movie, function(err) {
+//         if (err) throw err;
+//         console.log("logged")
+//     })
+    // fs.readFile("random.txt", "utf8", function(err, data) {
+
+    //     console.log(data)
+
+    // });
+    // searchSpotify(song);
+
+
