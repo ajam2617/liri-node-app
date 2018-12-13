@@ -170,6 +170,7 @@ function runMovie(movie) {
 
 //do-what-it-says using fs node package
 //take text inside random.txt=="I want it that Way" and run spotify-api
+//currently not working due to the beginning prompt asking two questions. I should have put the promise before the second question. An if statement would be great but I'll have to do more research with inquirer to see fit that's possible. 
 
 // function doWhat(movie) {
 //     fs.appendFile("log.txt", movie, function(err) {
